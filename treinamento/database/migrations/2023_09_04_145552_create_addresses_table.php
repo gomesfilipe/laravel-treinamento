@@ -16,6 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('cep', 8);
             $table->string('street', 128);
+            $table->string('neighborhood', 128);
             $table->string('city', 64);
             $table->string('state', 2); // enum??
         });
