@@ -16,4 +16,8 @@ class Address extends Model
         'city',
         'state',
     ];
+
+    public function company() {
+        return $this->hasOne(Company::class);
+    }
 }
