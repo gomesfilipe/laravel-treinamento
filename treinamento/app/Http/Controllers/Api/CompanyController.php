@@ -36,8 +36,8 @@ class CompanyController extends Controller
      */
     public function store(StoreCompanyRequest $request)
     {
-        // dd($request->all());
-        $company = $this->repository->store($request->all());
+        // dd($request->validated());
+        $company = $this->repository->store($request->validated());
         return response()->json($company, Response::HTTP_CREATED);
     }
 
