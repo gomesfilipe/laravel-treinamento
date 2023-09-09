@@ -19,8 +19,9 @@ class MyUserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        // dd($request->user());
         $users = $this->repository->getAll();
         return response()->json($users, Response::HTTP_OK);
     }
@@ -38,15 +39,15 @@ class MyUserController extends Controller
      */
     public function storeClient(StoreMyUserRequest $request)
     {
-        $user = $this->repository->store($request->all(), false);
-        $token = $user->createToken('token');
+        $user = $this->repository->store($request->validated(), false);
+        $token = $user->createToken('token', ['client']);
         $user['token'] = $token->plainTextToken;
         return response()->json($user, Response::HTTP_CREATED);
     }
 
     public function storeAdmin(StoreMyUserRequest $request) {
-        $user = $this->repository->store($request->all(), true);
-        $token = $user->createToken('token');
+        $user = $this->repository->store($request->validated(), true);
+        $token = $user->createToken('token', ['admin']);
         $user['token'] = $token->plainTextToken;
         return response()->json($user, Response::HTTP_CREATED);
     }
@@ -95,7 +96,11 @@ class MyUserController extends Controller
         }
         
         $user = $request->user();
-        $token = $user->createToken('token');
+        
+        $ability = $user->type === 'admin' ? 'admin' : 'client';
+        $token = $user->createToken('token', [$ability]);
+
+        // dd($token, $token->plainTextToken);
         $user['token'] = $token->plainTextToken;
         
         return response()->json($user, Response::HTTP_OK);
