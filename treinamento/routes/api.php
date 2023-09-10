@@ -32,6 +32,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/myuser/{myuser}', [MyUserController::class, 'update']);
         Route::delete('/myuser/{myuser}', [MyUserController::class, 'destroy']);
         Route::post('/admin/myuser', [MyUserController::class, 'storeAdmin']);
+
+        // atualizar foto de perfil de outro user
+        Route::post('/upload/{myuser}', [MyUserController::class, 'uploadProfilePicture']);
     });
     
     Route::middleware(('ability:client,admin'))->group(function () {
@@ -40,6 +43,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // listar empresas do próprio usuário
         Route::get('/myusercompanies', [MyUserController::class, 'indexMyCompanies']);
+        
+        // atualizar foto de perfil
+        Route::post('/upload', [MyUserController::class, 'uploadMyProfilePicture']);
     }); 
 
     // Route::get('/address', [AddressController::class, 'index']);

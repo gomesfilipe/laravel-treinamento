@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreMyUserRequest;
 use App\Http\Requests\UpdateMyUserRequest;
+use App\Http\Requests\UploadProfilePictureRequest;
 use App\Repositories\Interfaces\MyUserRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class MyUserController extends Controller
 {
@@ -21,7 +23,6 @@ class MyUserController extends Controller
      */
     public function index(Request $request)
     {
-        // dd($request->user());
         $users = $this->repository->getAll();
         return response()->json($users, Response::HTTP_OK);
     }
@@ -46,7 +47,7 @@ class MyUserController extends Controller
     }
 
     public function storeAdmin(StoreMyUserRequest $request) 
-    {
+    {   
         $user = $this->repository->store($request->validated(), true);
         $token = $user->createToken('token', ['admin']);
         $user['token'] = $token->plainTextToken;
@@ -130,5 +131,36 @@ class MyUserController extends Controller
         $user = $request->user();
         $companies = $this->repository->getCompanies($user->id);
         return response()->json($companies, Response::HTTP_OK);
+    }
+
+    public function uploadProfilePicture(UploadProfilePictureRequest $request, int $id) {
+        // echo 'entrou' . PHP_EOL;
+        $user = $this->repository->get($id);
+
+        // dd($request);
+
+        if($user->profile_picture !== 'profile_pictures/default.png') {
+            File::delete(storage_path("app/public/$user->profile_picture"));
+        }
+
+        $path = $request->file('profile_picture')->store('profile_pictures', 'public');
+        $path = str_replace('"', '', str_replace('\\', '', $path));
+        $user = $this->repository->update($id, ['profile_picture' => $path]);
+        
+        return response()->json(['profile_picture' => $user->profile_picture], Response::HTTP_OK);
+    }
+
+    public function uploadMyProfilePicture(UploadProfilePictureRequest $request) {
+        $user = $request->user();
+
+        if($user->profile_picture !== 'profile_pictures/default.png') {
+            File::delete(storage_path("app/public/$user->profile_picture"));
+        }
+
+        $path = $request->file('profile_picture')->store('profile_pictures', 'public');
+        $path = str_replace('"', '', str_replace('\\', '', $path));
+        $user = $this->repository->update($user->id, ['profile_picture' => $path]);
+        
+        return response()->json(['profile_picture' => $user->profile_picture], Response::HTTP_OK);
     }
 }

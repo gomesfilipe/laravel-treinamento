@@ -17,7 +17,7 @@ class MyUserRepository implements MyUserRepositoryInterface
       $attributes['type'] = $isAdmin ? 'admin' : 'client';
       $attributes['password'] = Hash::make($attributes['password']);
       $user = User::create($attributes);
-      return $user;
+      return $user->refresh(); // colocando valor default da imagem na model
     });
   }
 
