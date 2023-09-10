@@ -20,4 +20,8 @@ class Company extends Model
         // chave estrangeira fica do lado belongsTo
         return $this->belongsTo(Address::class);
     }
+
+    public function users() {
+        return $this->belongsToMany(User::class);
+    }
 }

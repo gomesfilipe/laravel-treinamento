@@ -45,7 +45,8 @@ class MyUserController extends Controller
         return response()->json($user, Response::HTTP_CREATED);
     }
 
-    public function storeAdmin(StoreMyUserRequest $request) {
+    public function storeAdmin(StoreMyUserRequest $request) 
+    {
         $user = $this->repository->store($request->validated(), true);
         $token = $user->createToken('token', ['admin']);
         $user['token'] = $token->plainTextToken;
@@ -100,7 +101,6 @@ class MyUserController extends Controller
         $ability = $user->type === 'admin' ? 'admin' : 'client';
         $token = $user->createToken('token', [$ability]);
 
-        // dd($token, $token->plainTextToken);
         $user['token'] = $token->plainTextToken;
         
         return response()->json($user, Response::HTTP_OK);
@@ -117,5 +117,18 @@ class MyUserController extends Controller
         $user = $request->user();
         $userModel = $this->repository->update($user->id, $request->validated());
         return response()->json($userModel, Response::HTTP_OK);
+    }
+
+    public function indexCompaniesFromUser(int $id) 
+    {
+        $companies = $this->repository->getCompanies($id);
+        return response()->json($companies, Response::HTTP_OK);
+    }
+
+    public function indexMyCompanies(Request $request) 
+    {
+        $user = $request->user();
+        $companies = $this->repository->getCompanies($user->id);
+        return response()->json($companies, Response::HTTP_OK);
     }
 }

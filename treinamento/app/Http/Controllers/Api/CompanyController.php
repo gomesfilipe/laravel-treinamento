@@ -75,4 +75,14 @@ class CompanyController extends Controller
         $this->repository->delete($id);
         return response()->noContent();
     }
+
+    public function indexUsersFromCompany(int $id) {
+        $users = $this->repository->getUsers($id);
+        return response()->json($users, Response::HTTP_OK);
+    }
+
+    public function addUserInCompany(int $companyId, int $userId) {
+        $this->repository->addUser($companyId, $userId);
+        return response()->noContent();
+    }
 }

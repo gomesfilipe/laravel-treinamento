@@ -57,4 +57,8 @@ class User extends Authenticatable
         // chave estrangeira fica do lado belongsTo
         return $this->belongsTo(Address::class);
     }
+
+    public function companies() {
+        return $this->belongsToMany(Company::class);
+    }
 }

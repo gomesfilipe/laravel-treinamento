@@ -25,8 +25,8 @@ class MyUserRepository implements MyUserRepositoryInterface
     return User::with(['address'])->get();
   }
 
-  public function get(int $id): User {
-    return User::with(['address'])->find($id);
+  public function get(int $id): User|null {
+    return User::with(['address'])->find($id)->first();
   }
 
   public function update(int $id, array $attributes): User {
@@ -44,5 +44,10 @@ class MyUserRepository implements MyUserRepositoryInterface
 
   public function delete(int $id) {
     User::destroy([$id]);
+  }
+
+  public function getCompanies(int $id) {
+    $user = User::where('id', $id)->first();
+    return $user->companies;
   }
 }

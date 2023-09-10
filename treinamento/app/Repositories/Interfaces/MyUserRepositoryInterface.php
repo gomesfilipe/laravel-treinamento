@@ -10,9 +10,11 @@ interface MyUserRepositoryInterface
 
   public function getAll();
 
-  public function get(int $id): User;
+  public function get(int $id): User|null;
 
   public function update(int $id, array $attributes): User;
 
   public function delete(int $id);
+
+  public function getCompanies(int $id);
 }
