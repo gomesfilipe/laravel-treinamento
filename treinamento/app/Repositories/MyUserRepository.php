@@ -26,7 +26,7 @@ class MyUserRepository implements MyUserRepositoryInterface
   }
 
   public function get(int $id): User|null {
-    return User::with(['address'])->find($id)->first();
+    return User::with(['address'])->find($id);
   }
 
   public function update(int $id, array $attributes): User {
