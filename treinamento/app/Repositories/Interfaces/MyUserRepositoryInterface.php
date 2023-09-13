@@ -3,18 +3,19 @@
 namespace App\Repositories\Interfaces;
 
 use App\Models\User;
+use Illuminate\Support\Collection;
 
 interface MyUserRepositoryInterface
 {
-  public function store(array $attributes, bool $isAdmin)/*: User*/;
+  public function store(array $attributes, bool $isAdmin): User;
 
-  public function getAll();
+  public function get(): Collection;
 
-  public function get(int $id): User|null;
+  public function find(int $id): User;
 
   public function update(int $id, array $attributes): User;
 
-  public function delete(int $id);
+  public function delete(int $id): void;
 
-  public function getCompanies(int $id);
+  public function getCompanies(int $id): Collection;
 }

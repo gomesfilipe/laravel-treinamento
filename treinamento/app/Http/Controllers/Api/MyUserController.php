@@ -7,10 +7,12 @@ use App\Http\Requests\StoreMyUserRequest;
 use App\Http\Requests\UpdateMyUserRequest;
 use App\Http\Requests\UploadProfilePictureRequest;
 use App\Repositories\Interfaces\MyUserRepositoryInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class MyUserController extends Controller
 {
@@ -21,24 +23,16 @@ class MyUserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(): JsonResponse
     {
-        $users = $this->repository->getAll();
+        $users = $this->repository->get();
         return response()->json($users, Response::HTTP_OK);
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    // public function create()
-    // {
-    //     //
-    // }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function storeClient(StoreMyUserRequest $request)
+    public function storeClient(StoreMyUserRequest $request): JsonResponse
     {
         $user = $this->repository->store($request->validated(), false);
         $token = $user->createToken('token', ['client']);
@@ -46,7 +40,7 @@ class MyUserController extends Controller
         return response()->json($user, Response::HTTP_CREATED);
     }
 
-    public function storeAdmin(StoreMyUserRequest $request) 
+    public function storeAdmin(StoreMyUserRequest $request): JsonResponse
     {   
         $user = $this->repository->store($request->validated(), true);
         $token = $user->createToken('token', ['admin']);
@@ -57,24 +51,16 @@ class MyUserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(int $id)
+    public function show(int $id): JsonResponse
     {
-        $user = $this->repository->get($id);
+        $user = $this->repository->find($id);
         return response()->json($user, Response::HTTP_OK);
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    // public function edit(MyUser $myUser)
-    // {
-    //     //
-    // }
-
-    /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateMyUserRequest $request, int $id)
+    public function update(UpdateMyUserRequest $request, int $id): JsonResponse
     {
         $user = $this->repository->update($id, $request->validated());
         return response()->json($user, Response::HTTP_OK);
@@ -83,13 +69,13 @@ class MyUserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int $id)
+    public function destroy(int $id): Response
     {
         $this->repository->delete($id);
         return response()->noContent();
     }
 
-    public function login(Request $request)
+    public function login(Request $request): JsonResponse
     {
         $credentials = $request->only(['email', 'password']);
         
@@ -107,59 +93,60 @@ class MyUserController extends Controller
         return response()->json($user, Response::HTTP_OK);
     }
 
-    public function showMe(Request $request)
+    public function showMe(Request $request): JsonResponse
     {
         $user = $request->user();
         return response()->json($user, Response::HTTP_OK);
     }
 
-    public function updateMe(UpdateMyUserRequest $request)
+    public function updateMe(UpdateMyUserRequest $request): JsonResponse
     {
         $user = $request->user();
         $userModel = $this->repository->update($user->id, $request->validated());
         return response()->json($userModel, Response::HTTP_OK);
     }
 
-    public function indexCompaniesFromUser(int $id) 
+    public function indexCompaniesFromUser(int $id): JsonResponse
     {
         $companies = $this->repository->getCompanies($id);
         return response()->json($companies, Response::HTTP_OK);
     }
 
-    public function indexMyCompanies(Request $request) 
+    public function indexMyCompanies(Request $request): JsonResponse 
     {
         $user = $request->user();
         $companies = $this->repository->getCompanies($user->id);
         return response()->json($companies, Response::HTTP_OK);
     }
 
-    public function uploadProfilePicture(UploadProfilePictureRequest $request, int $id) {
-        // echo 'entrou' . PHP_EOL;
-        $user = $this->repository->get($id);
+    public function uploadProfilePicture(UploadProfilePictureRequest $request, int $id): JsonResponse
+    {
+        $user = $this->repository->find($id);
 
-        // dd($request);
-
-        if($user->profile_picture !== 'profile_pictures/default.png') {
-            File::delete(storage_path("app/public/$user->profile_picture"));
+        if($user->profile_picture !== null) {
+            Storage::delete($user->profile_picture);
         }
 
-        $path = $request->file('profile_picture')->store('profile_pictures', 'public');
-        $path = str_replace('"', '', str_replace('\\', '', $path));
-        $user = $this->repository->update($id, ['profile_picture' => $path]);
+        $file = $request->file('profile_picture');
+        $url = Storage::put('public/profile_pictures', $file);
+
+        $user = $this->repository->update($id, ['profile_picture' => $url]);
         
         return response()->json(['profile_picture' => $user->profile_picture], Response::HTTP_OK);
     }
 
-    public function uploadMyProfilePicture(UploadProfilePictureRequest $request) {
+    public function uploadMyProfilePicture(UploadProfilePictureRequest $request): JsonResponse
+    {
         $user = $request->user();
 
-        if($user->profile_picture !== 'profile_pictures/default.png') {
-            File::delete(storage_path("app/public/$user->profile_picture"));
+        if($user->profile_picture !== null) {
+            Storage::delete($user->profile_picture);
         }
 
-        $path = $request->file('profile_picture')->store('profile_pictures', 'public');
-        $path = str_replace('"', '', str_replace('\\', '', $path));
-        $user = $this->repository->update($user->id, ['profile_picture' => $path]);
+        $file = $request->file('profile_picture');
+        $url = Storage::put('public/profile_pictures', $file);
+
+        $user = $this->repository->update($user->id, ['profile_picture' => $url]);
         
         return response()->json(['profile_picture' => $user->profile_picture], Response::HTTP_OK);
     }

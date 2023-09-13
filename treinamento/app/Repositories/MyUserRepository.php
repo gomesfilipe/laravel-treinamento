@@ -5,12 +5,13 @@ namespace App\Repositories;
 use App\Models\Address;
 use App\Models\User;
 use App\Repositories\Interfaces\MyUserRepositoryInterface;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class MyUserRepository implements MyUserRepositoryInterface
 {
-  public function store(array $attributes, bool $isAdmin) {
+  public function store(array $attributes, bool $isAdmin): User {
     return DB::transaction(function () use ($attributes, $isAdmin) {
       $address = Address::create($attributes);
       $attributes['address_id'] = $address->id;
@@ -21,12 +22,12 @@ class MyUserRepository implements MyUserRepositoryInterface
     });
   }
 
-  public function getAll() {
+  public function get(): Collection {
     return User::with(['address'])->get();
   }
 
-  public function get(int $id): User|null {
-    return User::with(['address'])->find($id);
+  public function find(int $id): User {
+    return User::with('address')->findOrFail($id);
   }
 
   public function update(int $id, array $attributes): User {
@@ -42,11 +43,11 @@ class MyUserRepository implements MyUserRepositoryInterface
     });
   }
 
-  public function delete(int $id) {
-    User::destroy([$id]);
+  public function delete(int $id): void {
+    User::destroy($id);
   }
 
-  public function getCompanies(int $id) {
+  public function getCompanies(int $id): Collection {
     $user = User::where('id', $id)->first();
     return $user->companies;
   }

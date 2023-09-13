@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Address;
 use App\Repositories\Interfaces\AddressRepositoryInterface;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class AddressRepository implements AddressRepositoryInterface
@@ -12,11 +13,11 @@ class AddressRepository implements AddressRepositoryInterface
     return Address::create($attributes);
   }
 
-  public function getAll() {
+  public function get(): Collection {
     return Address::all();
   }
 
-  public function get(int $id): Address {
+  public function find(int $id): Address {
     return Address::where('id', $id)->first();
   }
 
@@ -28,10 +29,7 @@ class AddressRepository implements AddressRepositoryInterface
     });
   }
 
-  public function delete(int $id) {
-    return DB::transaction(function () use ($id) {
-      $address = Address::where('id', $id)->first();
-      $address->delete();
-    });
+  public function delete(int $id): void {
+    Address::destroy($id);
   }
 }

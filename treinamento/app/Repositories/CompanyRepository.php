@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Address;
 use App\Models\Company;
 use App\Repositories\Interfaces\CompanyRepositoryInterface;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class CompanyRepository implements CompanyRepositoryInterface
@@ -18,12 +19,13 @@ class CompanyRepository implements CompanyRepositoryInterface
     });    
   }
 
-  public function getAll() {
+  public function get(): Collection
+  {
     return Company::with(['address'])->get();
   }
 
-  public function get(int $id): Company {
-    return Company::with('address')->find($id);
+  public function find(int $id): Company {
+    return Company::with('address')->findOrFail($id);
   }
 
   public function update(int $id, array $attributes): Company {
@@ -38,16 +40,17 @@ class CompanyRepository implements CompanyRepositoryInterface
   }
 
   public function delete(int $id) {
-    $company = Company::where('id', $id)->first();
-    $company->delete();
+    Company::destroy($id);
   }
 
-  public function getUsers(int $id) {
+  public function getUsers(int $id): Collection 
+  {
     $company = Company::where('id', $id)->first();
     return $company->users;
   }
 
-  public function addUser(int $companyId, int $userId) {
+  public function addUser(int $companyId, int $userId): void 
+  {
     $company = Company::where('id', $companyId)->first();
     $company->users()->attach($userId);
   }
