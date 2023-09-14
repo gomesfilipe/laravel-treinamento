@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Address;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,12 @@ class CompanyFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->name(),
+            'cnpj' => fake()->regexify('[0-9]{14}'),
+            'address_id' => function () {
+                dd(Address::factory());
+                return Address::factory()->create([]);
+            }
         ];
     }
 }

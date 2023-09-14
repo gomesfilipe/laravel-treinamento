@@ -28,6 +28,7 @@ class MyUserRepository implements MyUserRepositoryInterface
 
   public function find(int $id): User {
     return User::with('address')->findOrFail($id);
+
   }
 
   public function update(int $id, array $attributes): User {

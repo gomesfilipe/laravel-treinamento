@@ -31,8 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/user/{id}', [MyUserController::class, 'show']);
         Route::put('/user/{id}', [MyUserController::class, 'update']);
         Route::delete('/user/{id}', [MyUserController::class, 'destroy']);
-        Route::post('/admin-user', [MyUserController::class, 'storeAdmin']);
-
+        
         // atualizar foto de perfil de outro user
         Route::post('/user-update-profile-picture/{id}', [MyUserController::class, 'uploadProfilePicture']);
     });
@@ -40,14 +39,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware(('ability:client,admin'))->group(function () {
         Route::get('/my-user', [MyUserController::class, 'showMe']);
         Route::put('/my-user', [MyUserController::class, 'updateMe']);
-
+        
         // listar empresas do próprio usuário
         Route::get('/my-user-companies', [MyUserController::class, 'indexMyCompanies']);
         
         // atualizar foto de perfil
         Route::post('/my-user-update-profile-picture', [MyUserController::class, 'uploadMyProfilePicture']);
     }); 
-
+    
     // Route::get('/address', [AddressController::class, 'index']);
     // Route::get('/address/{id}', [AddressController::class, 'show']);
     // Route::post('/address', [AddressController::class, 'store']);
@@ -55,6 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route::delete('/address/{id}', [AddressController::class, 'destroy']);
 });
 
+Route::post('/admin-user', [MyUserController::class, 'storeAdmin']);
 Route::post('/client-user', [MyUserController::class, 'storeClient']);
 Route::post('/login', [MyUserController::class, 'login']); 
 
@@ -67,3 +67,13 @@ Route::post('/login', [MyUserController::class, 'login']);
 // client@teste.com.br
 // 123456
 // Bearer 2|gfHqjG186AGX9x1VmF27gxp3ouqo0YLSecpfXiSja40a6aee
+
+// token admin pc vix
+// admin@teste.com.br
+// 123456
+// Bearer 1|8EGCHfbfhaiGDU4BDzZJg91vYBopKYJ2Pnv1Tlkp4f4bd145
+
+// token client pc vix
+// client@teste.com.br
+// 123456
+// Bearer 2|Jx1GljFtMDFuK5XUYZ7kFobA1D6y9unjACZAEELw8c3f9fd1

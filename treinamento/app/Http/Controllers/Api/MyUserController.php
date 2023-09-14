@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreMyUserRequest;
 use App\Http\Requests\UpdateMyUserRequest;
 use App\Http\Requests\UploadProfilePictureRequest;
+use App\Notifications\UserCreated;
 use App\Repositories\Interfaces\MyUserRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -37,6 +38,8 @@ class MyUserController extends Controller
         $user = $this->repository->store($request->validated(), false);
         $token = $user->createToken('token', ['client']);
         $user['token'] = $token->plainTextToken;
+
+        $user->notify(new UserCreated($user));
         return response()->json($user, Response::HTTP_CREATED);
     }
 

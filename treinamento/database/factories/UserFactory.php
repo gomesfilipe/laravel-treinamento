@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Address;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -23,6 +24,10 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
+            'type' => fake()->randomElement(['client', 'admin']),
+            'cpf' => fake()->unique()->regexify('[0-9]{11}'),
+            'profile_picture' => fake()->imageUrl(),
+            'address_id' => Address::factory()->count(1)->create(),
         ];
     }
 
