@@ -30,7 +30,8 @@ class CompanyRepository implements CompanyRepositoryInterface
 
   public function update(int $id, array $attributes): Company {
     return DB::transaction(function () use ($id, $attributes) {
-      $company = Company::where('id', $id)->first();
+      // $company = Company::where('id', $id)->first();
+      $company = Company::findOrFail($id);
       $company->fill($attributes)->save();
 
       $address = Address::where('id', $company->address_id)->first();
@@ -45,13 +46,15 @@ class CompanyRepository implements CompanyRepositoryInterface
 
   public function getUsers(int $id): Collection 
   {
-    $company = Company::where('id', $id)->first();
+    // $company = Company::where('id', $id)->first();
+    $company = Company::findOrFail($id);
     return $company->users;
   }
 
   public function addUser(int $companyId, int $userId): void 
   {
-    $company = Company::where('id', $companyId)->first();
+    // $company = Company::where('id', $companyId)->first();
+    $company = Company::findOrFail($companyId);
     $company->users()->attach($userId);
   }
 }

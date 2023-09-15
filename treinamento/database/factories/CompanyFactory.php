@@ -19,10 +19,10 @@ class CompanyFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'cnpj' => fake()->regexify('[0-9]{14}'),
+            'cnpj' => fake()->regexify('[0-9]{8}0001[0-9]{2}'),
             'address_id' => function () {
-                dd(Address::factory());
-                return Address::factory()->create([]);
+                // dd(Address::factory()->create());
+                return Address::factory()->create();
             }
         ];
     }
