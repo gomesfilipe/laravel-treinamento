@@ -2,12 +2,7 @@
 
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\MyUserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('ability:admin')->group(function () {
@@ -61,12 +56,12 @@ Route::post('/login', [MyUserController::class, 'login']);
 // token admin
 // admin@teste.com.br
 // 123456
-// Bearer 1|XYlduTLKah3Y9dzhhVx6llCaXWL5rkAUzyNEb7Ina00f9206
+// Bearer 1|x0AQglnrnI6mbDtEhuj7l40Tl9HaOaLYYsTVSpkvc8016bed
 
 // token client
 // client@teste.com.br
 // 123456
-// Bearer 2|gfHqjG186AGX9x1VmF27gxp3ouqo0YLSecpfXiSja40a6aee
+// Bearer 2|14ttOtFMhQ33YOiZmRsFY0UVODJkTjyhHVGOBNChfd1540b3
 
 // token admin pc vix
 // admin@teste.com.br

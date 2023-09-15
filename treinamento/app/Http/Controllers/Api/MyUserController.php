@@ -40,6 +40,7 @@ class MyUserController extends Controller
         $user['token'] = $token->plainTextToken;
 
         $user->notify(new UserCreated($user));
+        
         return response()->json($user, Response::HTTP_CREATED);
     }
 
@@ -48,6 +49,9 @@ class MyUserController extends Controller
         $user = $this->repository->store($request->validated(), true);
         $token = $user->createToken('token', ['admin']);
         $user['token'] = $token->plainTextToken;
+
+        $user->notify(new UserCreated($user));
+        
         return response()->json($user, Response::HTTP_CREATED);
     }
 

@@ -49,7 +49,8 @@ class MyUserRepository implements MyUserRepositoryInterface
   }
 
   public function getCompanies(int $id): Collection {
-    $user = User::where('id', $id)->first();
+    // $user = User::where('id', $id)->first();
+    $user = User::findOrFail($id);
     return $user->companies;
   }
 }
