@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
         
         // atualizar foto de perfil de outro user
         Route::post('/user-update-profile-picture/{id}', [MyUserController::class, 'uploadProfilePicture']);
+        Route::post('/admin-user', [MyUserController::class, 'storeAdmin']);
     });
     
     Route::middleware(('ability:client,admin'))->group(function () {
@@ -49,7 +50,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route::delete('/address/{id}', [AddressController::class, 'destroy']);
 });
 
-Route::post('/admin-user', [MyUserController::class, 'storeAdmin']);
 Route::post('/client-user', [MyUserController::class, 'storeClient']);
 Route::post('/login', [MyUserController::class, 'login']); 
 
