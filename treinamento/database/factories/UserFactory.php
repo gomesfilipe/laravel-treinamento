@@ -26,8 +26,10 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'type' => fake()->randomElement(['client', 'admin']),
             'cpf' => fake()->unique()->regexify('[0-9]{11}'),
-            'profile_picture' => fake()->imageUrl(),
-            'address_id' => Address::factory()->count(1)->create(),
+            'profile_picture' => fake()->optional(0.8)->imageUrl(),
+            'address_id' => function () {
+                return Address::factory()->create();
+            }
         ];
     }
 

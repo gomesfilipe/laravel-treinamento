@@ -17,8 +17,7 @@ class MyUserSeeder extends Seeder
     public function run(): void
     {
         User::factory()
-            ->count(50)
-            // ->has(Address::factory()->count(1))
+            ->count(10)
             ->has(Company::factory()->count(10))
             ->create();
     }

@@ -18,10 +18,9 @@ class CompanyFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'name' => fake()->company(),
             'cnpj' => fake()->regexify('[0-9]{8}0001[0-9]{2}'),
             'address_id' => function () {
-                // dd(Address::factory()->create());
                 return Address::factory()->create();
             }
         ];
